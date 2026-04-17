@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Upload {
+  id               String   @id @default(uuid())
+  title            String
+  description      String
+  originalFileName String
+  storedFileName   String   @unique
+  storedPath       String
+  mimeType         String
+  sizeBytes        Int
+  status           String
+  facebookVideoId  String?
+  publishStatus    String   @default("not_published")
+  publishError     String?
+  createdAt        DateTime @default(now())
+}
+
+model Pokemon {
+  id String @id @default(cuid())
+  name String 
+  type String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Video {
+  id String @id @default(cuid())
+  title String
+  description String
+}
