@@ -1,5 +1,5 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { createVideoSchema, videoSchema } from '@/lib/shared/video/schema';
+import { uploadVideoSchema, videoSchema } from '@/lib/shared/video/schema';
 
 export const registry = new OpenAPIRegistry();
 
@@ -44,8 +44,25 @@ registry.registerPath({
     body: {
       required: true,
       content: {
-        'application/json': {
-          schema: createVideoSchema,
+        'multipart/form-data': {
+          schema: {
+            type: 'object',
+            properties: {
+              title: {
+                type: 'string',
+                example: 'Video Title',
+              },
+              description: {
+                type: 'string',
+                example: 'Video Description',
+              },
+              file: {
+                type: 'string',
+                format: 'binary',
+              },
+            },
+            required: ['title', 'description', 'file'],
+          },
         },
       },
     },
@@ -56,50 +73,6 @@ registry.registerPath({
       content: {
         'application/json': {
           schema: videoSchema,
-        },
-      },
-    },
-    400: {
-      description: 'Validation error',
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              error: {
-                type: 'array',
-                items: {
-                  type: 'object',
-                  properties: {
-                    field: {
-                      type: 'string',
-                      example: 'title',
-                    },
-                    message: {
-                      type: 'string',
-                      example: 'Required',
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              message: {
-                type: 'string',
-                example: 'Internal Server Error',
-              },
-            },
-          },
         },
       },
     },

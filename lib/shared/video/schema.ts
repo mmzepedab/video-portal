@@ -1,29 +1,31 @@
 import z from 'zod';
 
-export const baseVideoSchema = z.object({
-  title: z.string().meta({ example: 'New Way to create schema with meta' }),
-  description: z
-    .string()
-    .meta({ example: 'Description of creating the new meta schema' }),
+export const uploadVideoSchema = z.object({
+  title: z.string().meta({
+    example: 'Video Title',
+  }),
+  description: z.string().meta({
+    example: 'Video Description',
+  }),
+  file: z.instanceof(File),
 });
 
-export const createVideoSchema = z
+export const videoSchema = z
   .object({
-    title: z.string().meta({
-      example: 'Video de aeropuerto',
-    }),
-    description: z.string().meta({
-      example: 'Aeropuerto internacional de Palmerola',
-    }),
-  })
-  .meta({
-    id: 'CreateVideo',
-  });
-
-export const videoSchema = createVideoSchema
-  .extend({
     id: z.string().meta({
       example: '1',
+    }),
+    title: z.string().meta({
+      example: 'Video Title',
+    }),
+    description: z.string().meta({
+      example: 'Video Description',
+    }),
+    videoUrl: z.string().meta({
+      example: '/uploads/video.mp4',
+    }),
+    lastUsedAt: z.coerce.date().nullable().meta({
+      example: '2026-04-20T15:30:00.000Z',
     }),
   })
   .meta({
