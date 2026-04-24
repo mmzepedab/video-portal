@@ -15,7 +15,7 @@ export function startTelegramCron() {
 
   console.log('Starting Telegram cron job...');
 
-  telegramCronTask = cron.schedule('0 * * * *', async () => {
+  telegramCronTask = cron.schedule('0 9,12,21 * * *', async () => {
     if (isTelegramJobRunning) {
       console.log(
         'Telegram job skipped because previous run is still in progress'
