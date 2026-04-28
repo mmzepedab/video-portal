@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import CronStarter from '@/components/cron/CronStarter';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/app-sidebar';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -14,9 +16,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full">
         <CronStarter />
-        {children}
+
+        <SidebarProvider>
+          <AppSidebar />
+
+          <main className="flex min-h-screen flex-1 flex-col bg-gray-50">
+            <div className="">
+              <SidebarTrigger />
+            </div>
+
+            <div className="flex-1 p-6">{children}</div>
+          </main>
+        </SidebarProvider>
       </body>
     </html>
   );
