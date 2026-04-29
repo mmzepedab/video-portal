@@ -1,5 +1,5 @@
-import { createFile } from '@/lib/helpers/create-file';
 import { prisma } from '@/lib/prisma';
+import { uploadToR2 } from '@/lib/r2/upload';
 import { uploadVideoSchema, videoSchema } from '@/lib/shared/video/schema';
 import { NextResponse } from 'next/server';
 
@@ -33,6 +33,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
+
     const parsedData = uploadVideoSchema.safeParse({
       title: formData.get('title'),
       description: formData.get('description'),
@@ -52,8 +53,22 @@ export async function POST(req: Request) {
     }
 
     const { title, description, file } = parsedData.data;
-    const { fileName } = await createFile(file);
-    const videoUrl = `/uploads/${fileName}`;
+
+    if (!file.type.startsWith('video/')) {
+      return NextResponse.json({ error: 'Invalid file type' }, { status: 400 });
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: 'File too large. Max 20MB.' },
+        { status: 400 }
+      );
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const fileBuffer = Buffer.from(arrayBuffer);
+
+    const videoUrl = await uploadToR2(fileBuffer, file.name, file.type);
 
     const newVideo = await prisma.video.create({
       data: {
@@ -67,8 +82,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json(videoResponse, { status: 200 });
   } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
-      { message: `Internal Server Error` },
+      { message: 'Internal Server Error' },
       { status: 500 }
     );
   }
