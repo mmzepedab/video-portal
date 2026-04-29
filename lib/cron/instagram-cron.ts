@@ -15,31 +15,37 @@ export function startInstagramCron() {
 
   console.log('Starting Instagram cron job...');
 
-  instagramCronTask = cron.schedule('0 13,14,15 * * *', async () => {
-    if (isInstagramJobRunning) {
-      console.log(
-        'Instagram job skipped because previous run is still in progress'
-      );
-      return;
+  instagramCronTask = cron.schedule(
+    '0 9,13,21 * * *',
+    async () => {
+      if (isInstagramJobRunning) {
+        console.log(
+          'Instagram job skipped because previous run is still in progress'
+        );
+        return;
+      }
+
+      isInstagramJobRunning = true;
+
+      try {
+        console.log(
+          'Running Instagram scheduled job at:',
+          new Date().toLocaleString()
+        );
+
+        const result = await publishNextVideoToInstagram();
+
+        console.log('Instagram cron result:', result);
+      } catch (error) {
+        console.error('Instagram cron failed:', error);
+      } finally {
+        isInstagramJobRunning = false;
+      }
+    },
+    {
+      timezone: 'America/Tegucigalpa',
     }
-
-    isInstagramJobRunning = true;
-
-    try {
-      console.log(
-        'Running Instagram scheduled job at:',
-        new Date().toISOString()
-      );
-
-      const result = await publishNextVideoToInstagram();
-
-      console.log('Instagram cron result:', result);
-    } catch (error) {
-      console.error('Instagram cron failed:', error);
-    } finally {
-      isInstagramJobRunning = false;
-    }
-  });
+  );
 }
 
 export function stopInstagramCron() {
