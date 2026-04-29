@@ -9,11 +9,11 @@ import {
 
 const links = [
   { href: '/dashboard', label: 'Dashboard' },
+  { href: '/videos', label: 'Videos' },
   { href: '/uploads/new', label: 'New Upload' },
   { href: '/uploads/history', label: 'Upload History' },
   { href: '/settings', label: 'Settings' },
   { href: '/pokemon', label: 'Pokemon' },
-  { href: '/videos', label: 'Videos' },
 ];
 
 export function AppSidebar() {

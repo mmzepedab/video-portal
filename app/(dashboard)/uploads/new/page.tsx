@@ -53,7 +53,7 @@ export default function UploadPage() {
   };
 
   return (
-    <main className="p-6 max-w-2xl">
+    <main className="max-w-2xl">
       <h1 className="text-2xl font-bold">New Upload</h1>
       <p className="mt-1 text-sm text-gray-600">
         Upload a local video and prepare it for Facebook
