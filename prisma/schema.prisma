@@ -36,9 +36,10 @@ model Pokemon {
 }
 
 model Video {
-  id String @id @default(cuid())
-  title String
+  id          String    @id @default(cuid())
+  title       String
   description String
-  videoUrl String
-  lastUsedAt DateTime?
+  videoUrl    String
+  r2Key       String?
+  lastUsedAt  DateTime?
 }
