@@ -1,9 +1,9 @@
-import { startTelegramCron } from '@/lib/cron/telegram-cron';
+import { startInstagramCron } from '@/lib/cron/instagram-cron';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    startTelegramCron();
+    startInstagramCron();
 
     return NextResponse.json({
       success: true,
