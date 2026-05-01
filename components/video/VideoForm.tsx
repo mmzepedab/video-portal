@@ -8,16 +8,31 @@ type VideoFormProps = {
   onSuccess?: () => void;
 };
 
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/quicktime'];
+
 export default function VideoForm({ onSuccess }: VideoFormProps) {
   const initialForm: VideoInput = { title: '', description: '' };
 
   const [form, setForm] = useState<VideoInput>(initialForm);
   const [file, setFile] = useState<File | null>(null);
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const createVideo = async () => {
     try {
+      setErrorMessage(null);
+
       if (!file) {
         throw new Error('File is required');
+      }
+
+      if (!ALLOWED_VIDEO_TYPES.includes(file.type)) {
+        throw new Error('Only MP4 and MOV files are allowed');
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        throw new Error('File must be 50 MB or smaller');
       }
 
       const formData = new FormData();
@@ -31,7 +46,8 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
       });
 
       if (!response.ok) {
-        throw new Error("Couldn't get response from server");
+        const errorText = await response.text();
+        throw new Error(errorText || "Couldn't get response from server");
       }
 
       const data = await response.json();
@@ -43,7 +59,11 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
 
       return parsedVideo;
     } catch (error) {
-      throw new Error('Internal Server Error');
+      const message =
+        error instanceof Error ? error.message : 'Something went wrong';
+
+      console.error('Create video failed:', error);
+      setErrorMessage(message);
     }
   };
 
@@ -97,13 +117,15 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
           <input
             id="video-file"
             type="file"
-            accept="video/*"
+            accept="video/mp4,video/quicktime"
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             className="text-sm"
           />
 
           {file && <p className="text-xs text-gray-500 mt-1">{file.name}</p>}
         </div>
+
+        {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}
 
         <button
           type="button"
