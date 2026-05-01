@@ -1,10 +1,61 @@
-import { prisma } from '@/lib/prisma';
+'use client';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-export default async function DashboardPage() {
-  const totalSuccessfulUploads = await prisma.upload.count({
-    where: { status: 'uploaded' },
-  });
+export default function DashboardPage() {
+  const [tokenExpirationDaysLeft, setTokenExpirationDaysLeft] = useState<
+    number | null
+  >(null);
+
+  const [cloudfareSpaceUsed, setCloudfareSpaceUsed] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    const getInstagramTokenExpirationDate = async () => {
+      try {
+        const response = await fetch('/api/instagram/token');
+
+        if (!response.ok) {
+          throw new Error('Error fetching instagram token');
+        }
+
+        const data = await response.json();
+
+        const tokenDate = new Date(data.expiration_date).getTime();
+        const today = Date.now();
+
+        const diffTime = tokenDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        setTokenExpirationDaysLeft(diffDays);
+      } catch (error) {
+        console.error('Error fetching token expiration: ', error);
+      }
+    };
+
+    const getCloudfareR2UsedSpace = async () => {
+      try {
+        const response = await fetch('/api/r2/usage');
+
+        if (!response.ok) {
+          throw new Error('Error fetching R2 usage endpoint');
+        }
+
+        const data = await response.json();
+
+        setCloudfareSpaceUsed(data.usedGb);
+      } catch (error) {
+        console.error('Error fetching cloudfare data', error);
+      }
+    };
+
+    Promise.all([getInstagramTokenExpirationDate(), getCloudfareR2UsedSpace()])
+      .then((values) => {
+        console.log(values);
+      })
+      .catch((error) => console.error('Failed to get dashboard data', error));
+  }, []);
 
   return (
     <div>
@@ -26,20 +77,20 @@ export default async function DashboardPage() {
 
       <div className="mt-8 grid gap-4 md:grid-cols-3">
         <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">Google Drive</p>
-          <p className="mt-2 text-lg font-semibold">Not connected</p>
+          <p className="text-sm text-gray-500">Instagram Token Expiration</p>
+          <p className="mt-2 text-lg font-semibold">
+            {tokenExpirationDaysLeft} days left
+          </p>
         </div>
 
         <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">Facebook Page</p>
-          <p className="mt-2 text-lg font-semibold">Not connected</p>
+          <p className="text-sm text-gray-500">Cloudfare space used</p>
+          <p className="mt-2 text-lg font-semibold">{cloudfareSpaceUsed}gb</p>
         </div>
 
         <div className="rounded-lg border bg-white p-4">
           <p className="text-sm text-gray-500">Successful Uploads</p>
-          <p className="mt-2 text-lg font-semibold">
-            {totalSuccessfulUploads} uploads
-          </p>
+          <p className="mt-2 text-lg font-semibold">100 uploads</p>
         </div>
       </div>
 
