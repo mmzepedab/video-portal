@@ -58,9 +58,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid file type' }, { status: 400 });
     }
 
-    if (file.size > 20 * 1024 * 1024) {
+    if (file.size > 50 * 1024 * 1024) {
       return NextResponse.json(
-        { error: 'File too large. Max 20MB.' },
+        { error: 'File too large. Max 50MB.' },
         { status: 400 }
       );
     }
