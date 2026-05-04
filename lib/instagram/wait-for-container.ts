@@ -29,14 +29,18 @@ async function getContainerStatus(
 }
 
 export async function waitForContainer(creationId: string) {
-  const maxAttempts = 12;
+  const maxAttempts = 30;
+  const delayMs = 60000;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const status = await getContainerStatus(creationId);
 
     console.log(`Instagram container status:`, status);
 
-    if (status.status_code === 'FINISHED') {
+    if (
+      status.status_code === 'FINISHED' ||
+      status.status_code === 'PUBLISHED'
+    ) {
       return;
     }
 
@@ -44,7 +48,7 @@ export async function waitForContainer(creationId: string) {
       throw new Error(`Instagram container failed: ${JSON.stringify(status)}`);
     }
 
-    await sleep(5000);
+    await sleep(delayMs);
   }
 
   throw new Error('Instagram container was not ready after waiting');

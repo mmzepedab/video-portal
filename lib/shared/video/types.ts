@@ -1,5 +1,5 @@
 import z from 'zod';
-import { createVideoSchema, videoSchema } from './schema';
+import { uploadVideoSchema, videoSchema } from './schema';
 
-export type VideoInput = z.infer<typeof createVideoSchema>;
+export type VideoInput = z.infer<typeof uploadVideoSchema>;
 export type Video = z.infer<typeof videoSchema>;

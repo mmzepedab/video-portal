@@ -1,5 +1,9 @@
 'use client';
 
+import {
+  ALLOWED_VIDEO_MIME_TYPES,
+  VIDEO_MAX_FILE_SIZE_BYTES,
+} from '@/lib/shared/video/constants';
 import { videoSchema } from '@/lib/shared/video/schema';
 import { VideoInput } from '@/lib/shared/video/types';
 import { useState } from 'react';
@@ -8,13 +12,18 @@ type VideoFormProps = {
   onSuccess?: () => void;
 };
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
-const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/quicktime'];
+type VideoFormInput = {
+  title: string;
+  description: string;
+};
 
 export default function VideoForm({ onSuccess }: VideoFormProps) {
-  const initialForm: VideoInput = { title: '', description: '' };
+  const initialForm: VideoFormInput = {
+    title: '',
+    description: '',
+  };
 
-  const [form, setForm] = useState<VideoInput>(initialForm);
+  const [form, setForm] = useState<VideoFormInput>(initialForm);
   const [file, setFile] = useState<File | null>(null);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -27,11 +36,15 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
         throw new Error('File is required');
       }
 
-      if (!ALLOWED_VIDEO_TYPES.includes(file.type)) {
+      if (
+        !ALLOWED_VIDEO_MIME_TYPES.includes(
+          file.type as (typeof ALLOWED_VIDEO_MIME_TYPES)[number]
+        )
+      ) {
         throw new Error('Only MP4 and MOV files are allowed');
       }
 
-      if (file.size > MAX_FILE_SIZE) {
+      if (file.size > VIDEO_MAX_FILE_SIZE_BYTES) {
         throw new Error('File must be 50 MB or smaller');
       }
 
@@ -80,7 +93,7 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
             id="video-title"
             value={form.title}
             onChange={(e) =>
-              setForm((prev: VideoInput) => ({
+              setForm((prev: VideoFormInput) => ({
                 ...prev,
                 title: e.target.value,
               }))
@@ -100,7 +113,7 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
             id="video-description"
             value={form.description}
             onChange={(e) =>
-              setForm((prev: VideoInput) => ({
+              setForm((prev: VideoFormInput) => ({
                 ...prev,
                 description: e.target.value,
               }))
