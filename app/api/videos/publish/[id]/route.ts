@@ -23,12 +23,9 @@ export async function POST(
       `https://graph-video.facebook.com/v25.0/${pageId}/videos`,
       {
         method: 'POST',
-        headers: '',
         body: '',
       }
     );
-
-    //throw new Error('Error Fetching the video response');
 
     return Response.json({ Success: postVideoResponse });
   } catch (error) {

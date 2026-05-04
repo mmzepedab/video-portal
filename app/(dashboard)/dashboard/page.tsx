@@ -11,6 +11,8 @@ export default function DashboardPage() {
     null
   );
 
+  const [totalVideos, setTotalVideos] = useState('');
+
   useEffect(() => {
     const getInstagramTokenExpirationDate = async () => {
       try {
@@ -50,7 +52,26 @@ export default function DashboardPage() {
       }
     };
 
-    Promise.all([getInstagramTokenExpirationDate(), getCloudfareR2UsedSpace()])
+    const getVideosCount = async () => {
+      try {
+        const res = await fetch('/api/videos/count');
+
+        if (!res.ok) {
+          throw new Error('Unable to fetch videos count');
+        }
+
+        const data = await res.json();
+        setTotalVideos(data.count);
+      } catch (error) {
+        console.error('Error loading video count', error);
+      }
+    };
+
+    Promise.all([
+      getInstagramTokenExpirationDate(),
+      getCloudfareR2UsedSpace(),
+      getVideosCount(),
+    ])
       .then((values) => {
         console.log(values);
       })
@@ -89,8 +110,8 @@ export default function DashboardPage() {
         </div>
 
         <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">Successful Uploads</p>
-          <p className="mt-2 text-lg font-semibold">100 uploads</p>
+          <p className="text-sm text-gray-500">Total videos in database</p>
+          <p className="mt-2 text-lg font-semibold">{totalVideos} uploads</p>
         </div>
       </div>
 
