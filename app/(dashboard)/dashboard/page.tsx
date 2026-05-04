@@ -84,7 +84,7 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="mt-1 text-sm text-gray-600">
-            Manage your video uploads from Google Drive to Facebook
+            Manage videos and publish across Instagram, TikTok, and YouTube
           </p>
         </div>
 

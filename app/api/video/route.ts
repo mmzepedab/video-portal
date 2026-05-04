@@ -7,10 +7,11 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const search = searchParams.get('search') ?? '';
-    const lastUsedAt = searchParams.get('lastUsedAtOrder');
+    const lastUsedAt =
+      searchParams.get('lastUsedAtOrder') === 'desc' ? 'desc' : 'asc';
 
     const videos = await prisma.video.findMany({
-      orderBy: { lastUsedAt: lastUsedAt === 'desc' ? 'desc' : 'asc' },
+      orderBy: { lastUsedAt: { sort: lastUsedAt, nulls: 'first' } },
       where: {
         title: {
           contains: search,
