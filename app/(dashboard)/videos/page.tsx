@@ -47,7 +47,14 @@ export default function VideosPage() {
   };
 
   useEffect(() => {
-    getVideos();
+    async function loadVideos() {
+      const response = await fetch(`/api/video?${searchParams.toString()}`);
+      const data = await response.json();
+      const parsedVideos = videoSchema.array().parse(data);
+      setVideos(parsedVideos);
+    }
+
+    loadVideos();
   }, [searchParams]);
 
   const updateLastUsedAtDate = async (id: string) => {

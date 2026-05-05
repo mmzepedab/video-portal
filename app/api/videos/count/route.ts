@@ -8,7 +8,7 @@ export async function GET() {
     return NextResponse.json({ count });
   } catch (error) {
     return NextResponse.json(
-      { error: 'Unable to count videos' },
+      { error: `Unable to count videos: ${error}` },
       { status: 500 }
     );
   }

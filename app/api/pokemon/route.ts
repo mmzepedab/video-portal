@@ -1,14 +1,8 @@
 import { createPokemon } from '@/lib/server/pokemon/create-pokemon';
-import { createPokemonSchema } from '@/lib/shared/pokemon/schemas';
 import { NextResponse } from 'next/server';
 import z, { ZodError } from 'zod';
 
-const mockedDB = [
-  { name: 'Pikachu', type: 'Electric' },
-  { name: 'charmander', type: 'fire' },
-];
-
-export async function GET(request: Request) {
+export async function GET() {
   return NextResponse.json({ success: 'Bien' }, { status: 200 });
 }
 

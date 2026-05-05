@@ -1,19 +1,16 @@
 'use client';
 
 import { POKEMON_TYPES } from '@/lib/shared/pokemon/constants';
-import {
-  createPokemonSchema,
-  pokemonSchema,
-} from '@/lib/shared/pokemon/schemas';
+import { createPokemonSchema } from '@/lib/shared/pokemon/schemas';
 import { CreatePokemonInput, Pokemon } from '@/lib/shared/pokemon/types';
 import { useState } from 'react';
-import z, { flattenError, ZodError } from 'zod';
+import z from 'zod';
 
 export function PokemonForm() {
   const initialForm: CreatePokemonInput = { name: '', type: 'water' };
 
   const [form, setForm] = useState<CreatePokemonInput>(initialForm);
-  const [responseData, setResponseData] = useState<Pokemon | null>(null);
+  const [responseData] = useState<Pokemon | null>(null);
 
   const [errorMessage, setErrorMessage] = useState('');
 

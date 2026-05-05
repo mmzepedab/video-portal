@@ -25,7 +25,7 @@ export async function GET(req: Request) {
     return NextResponse.json(parsedVideos, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: `Internal Server Error ${error}` },
       { status: 500 }
     );
   }

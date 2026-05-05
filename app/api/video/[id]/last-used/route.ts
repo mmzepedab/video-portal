@@ -17,7 +17,7 @@ export async function PATCH(_req: Request, { params }: RouteContext) {
     return NextResponse.json(updatedVideo, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: `Internal Server Error ${error}` },
       { status: 500 }
     );
   }

@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import {
   Sidebar,
@@ -5,6 +7,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
+  useSidebar,
 } from '@/components/ui/sidebar';
 
 const links = [
@@ -17,6 +20,8 @@ const links = [
 ];
 
 export function AppSidebar() {
+  const { setOpenMobile } = useSidebar();
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -35,6 +40,7 @@ export function AppSidebar() {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={() => setOpenMobile(false)}
                 className="rounded-md px-3 py-2 text-sm hover:bg-muted"
               >
                 {link.label}

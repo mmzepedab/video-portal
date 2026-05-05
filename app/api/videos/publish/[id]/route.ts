@@ -7,7 +7,7 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const { pageId, pageAccessToken } = getFacebookConfig();
+    const { pageId } = getFacebookConfig();
 
     const upload = await prisma.upload.findUnique({
       where: {

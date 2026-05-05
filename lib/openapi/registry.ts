@@ -1,5 +1,5 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { uploadVideoSchema, videoSchema } from '@/lib/shared/video/schema';
+import { videoSchema } from '@/lib/shared/video/schema';
 
 export const registry = new OpenAPIRegistry();
 

@@ -5,8 +5,8 @@ import {
   VIDEO_MAX_FILE_SIZE_BYTES,
 } from '@/lib/shared/video/constants';
 import { videoSchema } from '@/lib/shared/video/schema';
-import { VideoInput } from '@/lib/shared/video/types';
 import { useState } from 'react';
+import { Spinner } from '../ui/spinner';
 
 type VideoFormProps = {
   onSuccess?: () => void;
@@ -25,12 +25,14 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
 
   const [form, setForm] = useState<VideoFormInput>(initialForm);
   const [file, setFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const createVideo = async () => {
     try {
       setErrorMessage(null);
+      setIsLoading(true);
 
       if (!file) {
         throw new Error('File is required');
@@ -77,6 +79,8 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
 
       console.error('Create video failed:', error);
       setErrorMessage(message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -143,11 +147,17 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
         <button
           type="button"
           onClick={createVideo}
-          disabled={!form.title || !form.description || !file}
+          disabled={!form.title || !form.description || !file || isLoading}
           className="mt-2 rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
         >
           Create
         </button>
+
+        {isLoading && (
+          <div className="flex items-center justify-center w-full">
+            <Spinner className="size-6" />
+          </div>
+        )}
       </div>
     </div>
   );
