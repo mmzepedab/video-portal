@@ -4,7 +4,7 @@ import { videoSchema } from '@/lib/shared/video/schema';
 import { Video } from '@/lib/shared/video/types';
 import CreateVideoDialog from '@/components/video/CreateVideoDialog';
 import { useEffect, useState } from 'react';
-import { Download, Pencil, Trash2 } from 'lucide-react';
+import { Trash2, Upload } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import VideoFilters from '@/components/video/VideoFilters';
 
@@ -38,8 +38,8 @@ export default function VideosPage() {
     return video;
   };
 
-  const handleEdit = (id: string) => {
-    console.log(`Handle edit id ${id}`);
+  const handleVideoUpload = (id: string) => {
+    console.log(`Handle upload video id ${id}`);
   };
 
   const copyToClipboard = (text: string) => {
@@ -121,6 +121,8 @@ export default function VideosPage() {
                       ? new Date(video.lastUsedAt).toLocaleString()
                       : 'Never'}
                   </p>
+
+                  {/*  TODO: Re-add download functionality in the future if needed
                   <a
                     href={video.videoUrl}
                     download
@@ -131,15 +133,16 @@ export default function VideosPage() {
                     }}
                   >
                     <Download size={18} />
-                  </a>
+                  </a>                  
+                  */}
 
                   <button
                     type="button"
-                    onClick={() => handleEdit(video.id)}
+                    onClick={() => handleVideoUpload(video.id)}
                     className="hover:text-black"
-                    title="Editar"
+                    title="Subir"
                   >
-                    <Pencil size={18} />
+                    <Upload size={18} />
                   </button>
 
                   <button
