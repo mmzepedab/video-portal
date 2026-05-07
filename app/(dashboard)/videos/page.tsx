@@ -69,7 +69,7 @@ export default function VideosPage() {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-0">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-lg font-bold">Facebook Videos Page</h1>
         <CreateVideoDialog onCreated={getVideos} />
