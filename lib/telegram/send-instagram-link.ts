@@ -27,7 +27,7 @@ export async function sendInstagramLinkToTelegram({
       },
       body: JSON.stringify({
         chat_id: chatId,
-        text: `Nuevo Reel publicado ✅\n\n${title}`,
+        text: `${title}`,
         reply_markup: {
           inline_keyboard: [
             [
