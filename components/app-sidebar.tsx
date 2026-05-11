@@ -16,7 +16,7 @@ const links = [
   { href: '/uploads/new', label: 'New Upload' },
   { href: '/uploads/history', label: 'Upload History' },
   { href: '/settings', label: 'Settings' },
-  { href: '/pokemon', label: 'Pokemon' },
+  { href: '/docs', label: 'OpenAPI' },
 ];
 
 export function AppSidebar() {
@@ -28,7 +28,7 @@ export function AppSidebar() {
         <div className="px-2 py-2">
           <h2 className="text-lg font-bold">Video Portal</h2>
           <p className="text-xs text-muted-foreground">
-            Google Drive to Facebook
+            Publish videos to multiple Platforms
           </p>
         </div>
       </SidebarHeader>

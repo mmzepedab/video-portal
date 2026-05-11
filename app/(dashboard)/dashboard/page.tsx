@@ -1,5 +1,5 @@
 'use client';
-import Link from 'next/link';
+import CreateVideoDialog from '@/components/video/CreateVideoDialog';
 import { useEffect, useState } from 'react';
 
 export default function DashboardPage() {
@@ -88,12 +88,11 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <Link
-          href="/uploads/new"
-          className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
-        >
-          New Upload
-        </Link>
+        <CreateVideoDialog
+          onCreated={function (): void | Promise<void> {
+            throw new Error('Function not implemented.');
+          }}
+        />
       </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-3">

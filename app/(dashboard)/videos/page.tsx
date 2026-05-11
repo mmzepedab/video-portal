@@ -1,45 +1,64 @@
 'use client';
 
+import CreateVideoDialog from '@/components/video/CreateVideoDialog';
+import UploadVideoButton from '@/components/video/UploadVideoButton';
+import VideoFilters from '@/components/video/VideoFilters';
 import { videoSchema } from '@/lib/shared/video/schema';
 import { Video } from '@/lib/shared/video/types';
-import CreateVideoDialog from '@/components/video/CreateVideoDialog';
-import { useEffect, useState } from 'react';
-import { Trash2, Upload } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import VideoFilters from '@/components/video/VideoFilters';
+import { useEffect, useState } from 'react';
 
 export default function VideosPage() {
   const [videos, setVideos] = useState<Video[]>([]);
   const searchParams = useSearchParams();
 
   const getVideos = async () => {
-    const response = await fetch(`/api/video?${searchParams.toString()}`);
+    const response = await fetch(`/api/videos?${searchParams.toString()}`);
+
+    if (!response.ok) {
+      throw new Error('Error loading videos');
+    }
+
     const data = await response.json();
     const parsedVideos = videoSchema.array().parse(data);
+
     setVideos(parsedVideos);
   };
 
-  const handleDelete = (id: string) => {
-    deleteVideo(id).then((video) => {
-      console.log(`Deleted video: ${JSON.stringify(video)}`);
-      setVideos((prev) => prev.filter((video) => video.id !== id));
+  const deleteVideo = async (id: string): Promise<void> => {
+    const response = await fetch(`/api/videos/${id}`, {
+      method: 'DELETE',
     });
-  };
-
-  const deleteVideo = async (id: string): Promise<Video> => {
-    const response = await fetch(`/api/video/${id}`, { method: 'DELETE' });
 
     if (!response.ok) {
       throw new Error('Error deleting video');
     }
-
-    const data = await response.json();
-    const video = videoSchema.parse(data);
-    return video;
   };
 
-  const handleVideoUpload = (id: string) => {
-    console.log(`Handle upload video id ${id}`);
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteVideo(id);
+      setVideos((prev) => prev.filter((video) => video.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleVideoUpload = async (videoId: string) => {
+    try {
+      const response = await fetch(`/api/videos/${videoId}/publish/instagram`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Error uploading video');
+      }
+
+      await getVideos();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const copyToClipboard = (text: string) => {
@@ -47,31 +66,13 @@ export default function VideosPage() {
   };
 
   useEffect(() => {
-    async function loadVideos() {
-      const response = await fetch(`/api/video?${searchParams.toString()}`);
-      const data = await response.json();
-      const parsedVideos = videoSchema.array().parse(data);
-      setVideos(parsedVideos);
-    }
-
-    loadVideos();
+    getVideos().catch(console.error);
   }, [searchParams]);
-
-  const updateLastUsedAtDate = async (id: string) => {
-    const response = await fetch(`/api/video/${id}/last-used`, {
-      method: 'PATCH',
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to update lastUsedAt');
-    }
-    await getVideos();
-  };
 
   return (
     <div className="p-0">
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-lg font-bold">Facebook Videos Page</h1>
+        <h1 className="text-lg font-bold">Videos Page</h1>
         <CreateVideoDialog onCreated={getVideos} />
       </div>
 
@@ -96,7 +97,7 @@ export default function VideosPage() {
               <div className="flex flex-1 flex-col justify-between p-3">
                 <div className="min-w-0 flex flex-col gap-2">
                   <h2
-                    className="line-clamp-1 text-sm font-semibold cursor-pointer hover:text-gray-600"
+                    className="line-clamp-1 cursor-pointer text-sm font-semibold hover:text-gray-600"
                     onClick={() => copyToClipboard(video.title)}
                     title="Copiar título"
                   >
@@ -106,7 +107,7 @@ export default function VideosPage() {
                   <div className="h-px bg-gray-200" />
 
                   <p
-                    className="line-clamp-4 text-xs text-gray-600 cursor-pointer hover:text-gray-800"
+                    className="line-clamp-4 cursor-pointer text-xs text-gray-600 hover:text-gray-800"
                     onClick={() => copyToClipboard(video.description)}
                     title="Copiar descripción"
                   >
@@ -122,28 +123,10 @@ export default function VideosPage() {
                       : 'Never'}
                   </p>
 
-                  {/*  TODO: Re-add download functionality in the future if needed
-                  <a
-                    href={video.videoUrl}
-                    download
-                    className="hover:text-black"
-                    title="Descargar"
-                    onClick={async () => {
-                      await updateLastUsedAtDate(video.id);
-                    }}
-                  >
-                    <Download size={18} />
-                  </a>                  
-                  */}
-
-                  <button
-                    type="button"
-                    onClick={() => handleVideoUpload(video.id)}
-                    className="hover:text-black"
-                    title="Subir"
-                  >
-                    <Upload size={18} />
-                  </button>
+                  <UploadVideoButton
+                    videoTitle={video.title}
+                    onConfirm={() => handleVideoUpload(video.id)}
+                  />
 
                   <button
                     type="button"

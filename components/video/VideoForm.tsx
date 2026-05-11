@@ -55,7 +55,7 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
       formData.append('description', form.description);
       formData.append('file', file);
 
-      const response = await fetch('/api/video', {
+      const response = await fetch('/api/videos', {
         method: 'POST',
         body: formData,
       });
