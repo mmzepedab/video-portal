@@ -6,10 +6,10 @@ import VideoFilters from '@/components/video/VideoFilters';
 import { videoSchema } from '@/lib/shared/video/schema';
 import { Video } from '@/lib/shared/video/types';
 import { Trash2 } from 'lucide-react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
-export default function VideosPage() {
+function VideosPageContent() {
   const [videos, setVideos] = useState<Video[]>([]);
   const searchParams = useSearchParams();
 
@@ -143,5 +143,13 @@ export default function VideosPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VideosPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VideosPageContent />
+    </Suspense>
   );
 }
