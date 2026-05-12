@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "make:page": "node scripts/make-page.js",
-    "test": "jest"
+    "test": "vitest",
+    "test:watch": "vitest",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^8.5.0",
@@ -46,6 +48,7 @@
     "prettier": "^3.8.1",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.6"
   }
 }
