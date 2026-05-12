@@ -1,12 +1,9 @@
 'use client';
 
-import {
-  ALLOWED_VIDEO_MIME_TYPES,
-  VIDEO_MAX_FILE_SIZE_BYTES,
-} from '@/lib/shared/video/constants';
 import { videoSchema } from '@/lib/shared/video/schema';
 import { useState } from 'react';
 import { Spinner } from '../ui/spinner';
+import { validateVideoFile } from '@/lib/video/validate-video-file';
 
 type VideoFormProps = {
   onSuccess?: () => void;
@@ -38,16 +35,9 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
         throw new Error('File is required');
       }
 
-      if (
-        !ALLOWED_VIDEO_MIME_TYPES.includes(
-          file.type as (typeof ALLOWED_VIDEO_MIME_TYPES)[number]
-        )
-      ) {
-        throw new Error('Only MP4 and MOV files are allowed');
-      }
-
-      if (file.size > VIDEO_MAX_FILE_SIZE_BYTES) {
-        throw new Error('File must be 50 MB or smaller');
+      const videoValidationResult = validateVideoFile(file);
+      if (!videoValidationResult.success) {
+        throw new Error(videoValidationResult.error);
       }
 
       const formData = new FormData();
@@ -134,7 +124,7 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
           <input
             id="video-file"
             type="file"
-            accept="video/mp4,video/quicktime"
+            accept="video/mp4,video/quicktime,video/mov"
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             className="text-sm"
           />
@@ -147,7 +137,9 @@ export default function VideoForm({ onSuccess }: VideoFormProps) {
         <button
           type="button"
           onClick={createVideo}
-          disabled={!form.title || !form.description || !file || isLoading}
+          disabled={
+            !form.title.trim() || !form.description.trim() || !file || isLoading
+          }
           className="mt-2 rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
         >
           Create
