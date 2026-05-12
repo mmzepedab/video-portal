@@ -1,6 +1,6 @@
 export const MB = 1024 * 1024;
 
-export const VIDEO_MAX_FILE_SIZE_MB = 50;
+export const VIDEO_MAX_FILE_SIZE_MB = 100;
 
 export const VIDEO_MAX_FILE_SIZE_BYTES = VIDEO_MAX_FILE_SIZE_MB * MB;
 

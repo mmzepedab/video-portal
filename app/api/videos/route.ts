@@ -1,5 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { uploadToR2 } from '@/lib/r2/upload';
+import {
+  VIDEO_MAX_FILE_SIZE_BYTES,
+  VIDEO_MAX_FILE_SIZE_MB,
+} from '@/lib/shared/video/constants';
 import { uploadVideoSchema, videoSchema } from '@/lib/shared/video/schema';
 import { NextResponse } from 'next/server';
 
@@ -59,9 +63,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid file type' }, { status: 400 });
     }
 
-    if (file.size > 50 * 1024 * 1024) {
+    if (file.size > VIDEO_MAX_FILE_SIZE_BYTES) {
       return NextResponse.json(
-        { error: 'File too large. Max 50MB.' },
+        {
+          error: `File too large. Max ${VIDEO_MAX_FILE_SIZE_MB}MB.`,
+        },
+
         { status: 400 }
       );
     }
